@@ -54,6 +54,13 @@ function renderJobCard(lines) {
   </article>`;
 }
 
+export function sourceImageUrl(path) {
+  const url = new URL(`..${path.replace(/\.png$/, ".webp")}`, import.meta.url);
+  const version = "__COURSE_BUILD__";
+  if (!version.startsWith("__")) url.searchParams.set("v", version);
+  return url.href;
+}
+
 export function renderMarkdown(markdown = "") {
   const lines = markdown.replace(/\r/g, "").trim().split("\n");
   const output = [];
@@ -63,8 +70,8 @@ export function renderMarkdown(markdown = "") {
     if (!line.trim()) { index += 1; continue; }
     const sourceImage = line.trim().match(/^!\[([^\]]*)\]\((\/app\/assets\/[a-zA-Z0-9/_.-]+)\)$/);
     if (sourceImage) {
-      const imageUrl = new URL(`..${sourceImage[2]}`, import.meta.url).href;
-      output.push(`<figure class="source-slide-image"><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(sourceImage[1])}" decoding="sync"></figure>`);
+      const imageUrl = sourceImageUrl(sourceImage[2]);
+      output.push(`<figure class="source-slide-image"><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(sourceImage[1])}" decoding="async" loading="eager" fetchpriority="high"></figure>`);
       index += 1; continue;
     }
     const diagram = line.trim().match(/^:::diagram ([a-z0-9-]+)$/);

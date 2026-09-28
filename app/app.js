@@ -1,4 +1,4 @@
-import { parseLecture, parsePresenterNotes, renderMarkdown } from "./lib.js";
+import { parseLecture, parsePresenterNotes, renderMarkdown, sourceImageUrl } from "./lib.js";
 
 const lectures = [
   { id: 1, short: "Основы", title: "Основы Advanced Jobs To Be Done", description: "Работа, выбор решения и проблема. Как исследование помогает принимать продуктовые решения.", accent: "#d95d39" },
@@ -9,6 +9,53 @@ const lectures = [
 ];
 
 const state = { lessonId: null, slideIndex: 0, lecture: null, slideNotes: [], notesOpen: false, cache: new Map() };
+const imagePreloads = new Map();
+
+function prepareSlideImages() {
+  for (const img of elements.slideContent.querySelectorAll('.source-slide-image img')) {
+    const figure = img.parentElement;
+    const status = document.createElement('div');
+    status.className = 'image-state';
+    status.setAttribute('role', 'status');
+    const message = document.createElement('span');
+    message.textContent = 'Загружаем изображение…';
+    const retry = document.createElement('button');
+    retry.type = 'button';
+    retry.textContent = 'Повторить загрузку';
+    retry.hidden = true;
+    status.append(message, retry);
+    figure.append(status);
+    const loaded = () => { status.hidden = true; requestAnimationFrame(fitCurrentSlide); };
+    const failed = () => {
+      status.hidden = false;
+      message.textContent = 'Изображение не загрузилось';
+      retry.hidden = false;
+    };
+    img.addEventListener('load', loaded);
+    img.addEventListener('error', failed);
+    retry.addEventListener('click', () => {
+      retry.hidden = true;
+      message.textContent = 'Загружаем изображение…';
+      const url = new URL(img.src);
+      url.searchParams.set('retry', Date.now());
+      img.src = url.href;
+    });
+    if (img.complete) img.naturalWidth ? loaded() : failed();
+  }
+  // Warm only the next two slides so the current image keeps network priority.
+  for (const slide of state.lecture.slides.slice(state.slideIndex + 1, state.slideIndex + 3)) {
+    const path = slide.body.match(/^!\[[^\]]*\]\((\/app\/assets\/[a-zA-Z0-9/_.-]+)\)$/m)?.[1];
+    if (!path) continue;
+    const url = sourceImageUrl(path);
+    if (imagePreloads.has(url)) continue;
+    const image = new Image();
+    image.decoding = 'async';
+    image.fetchPriority = 'low';
+    imagePreloads.set(url, image);
+    image.onerror = () => imagePreloads.delete(url);
+    image.src = url;
+  }
+}
 const ids = ["homeButton", "headerActions", "libraryView", "lectureGrid", "playerView", "lectureSwitcher", "lessonNumber", "lessonTitle", "currentSlideNumber", "totalSlides", "progressBar", "slide", "slideKicker", "slideTitle", "slideContent", "slideCue", "previousButton", "nextButton", "slideLabel", "overviewButton", "notesButton", "fullscreenButton", "overviewDialog", "slideMap", "presenterPanel", "presenterNoteTitle", "presenterNoteMeta", "presenterNoteContent", "notesCloseButton", "lessonDialog", "lessonList", "toast"];
 const elements = Object.fromEntries(ids.map((id) => [id, document.getElementById(id)]));
 
@@ -76,6 +123,7 @@ function renderSlide() {
   elements.slide.classList.remove("slide-enter"); void elements.slide.offsetWidth; elements.slide.classList.add("slide-enter");
   elements.slideKicker.textContent = slide.isIntro ? "Открытие курса" : `${lecture.short} · занятие ${state.lessonId}`;
   elements.slideTitle.textContent = slide.title; elements.slideContent.innerHTML = renderMarkdown(slide.body);
+  prepareSlideImages();
   elements.currentSlideNumber.textContent = String(current).padStart(2, "0");
   elements.slideLabel.textContent = `${slide.isIntro ? "Вводный" : "Слайд"} ${slide.marker}`;
   elements.progressBar.style.width = `${(current / total) * 100}%`;
