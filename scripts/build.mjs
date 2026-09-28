@@ -10,7 +10,7 @@ await mkdir(output, { recursive: true });
 // Publish only player assets and the lesson files that the player loads.
 await cp(new URL("app/", root), new URL("app/", output), {
   recursive: true,
-  filter: (source) => !extname(source) || /\.(js|css|jpg|jpeg|svg|webp|woff2?)$/.test(source),
+  filter: (source) => !extname(source) || /\.(js|css|png|jpg|jpeg|svg|webp|woff2?)$/.test(source),
 });
 const html = await readFile(new URL("app/index.html", root), "utf8");
 await writeFile(new URL("index.html", output), html.replaceAll('="/app/', '="./app/').replace(/(\.css|\.js)"/g, `$1?v=${version}"`));
