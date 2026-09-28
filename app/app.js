@@ -116,7 +116,6 @@ function renderSlide() {
   const jobCardCount = (slide.body.match(/^:::job-card$/gm) || []).length;
   elements.slide.classList.toggle("has-job-card", jobCardCount > 0);
   elements.slide.classList.toggle("job-card-pair", jobCardCount > 1);
-  elements.slide.classList.toggle("has-diagram", /^:::diagram /m.test(slide.body));
   elements.slide.classList.toggle("has-source-image", /^!\[[^\]]*\]\(\/app\/assets\//m.test(slide.body));
   elements.slide.classList.toggle("compact", slide.body.length > 220);
   elements.slide.classList.toggle("dense", slide.body.length > 420);

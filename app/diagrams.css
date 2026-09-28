@@ -1,21 +1,3 @@
-/* Diagrams get the main part of the canvas; the title states the takeaway. */
-.slide.has-diagram { overflow-y: auto; }
-.slide.has-diagram .slide-inner { max-width: 1480px; padding: 16px clamp(24px, 5vw, 76px); }
-.slide.has-diagram .slide-kicker { margin-bottom: 8px; }
-.slide.has-diagram h2 { margin-bottom: 12px; }
-.slide.has-diagram .slide-content { max-width: none; font-size: clamp(.95rem, 1.3vw, 1.2rem); }
-.semantic-diagram { width: 100%; margin: 0; overflow-x: auto; }
-.semantic-diagram svg { display: block; width: 100%; height: auto; max-height: min(52vh, max(230px, calc(100dvh - 342px))); color: var(--ink); font-family: var(--font-sans); }
-.semantic-diagram svg text { fill: currentColor; }
-.semantic-diagram .diagram-edge-label { paint-order: stroke; stroke: var(--paper); stroke-width: 7px; stroke-linejoin: round; fill: #62695f; }
-.has-diagram .slide-content > p { max-width: 90ch; margin: 10px 0 0; color: #565d54; line-height: 1.4; }
-.player.notes-open .has-diagram .slide-inner { padding: 20px 24px; }
-.player.notes-open .semantic-diagram svg { min-width: 680px; max-height: none; }
-@media (max-width: 700px) {
-  .slide.has-diagram .slide-inner { padding: 22px 20px; margin: 0; }
-  .semantic-diagram svg { min-width: 700px; max-height: none; }
-  .has-diagram .slide-content > p { font-size: .95rem; }
-}
 @media (prefers-reduced-motion: reduce) { .slide-enter { animation: none; } }
 
 /* Original source slides retain their complete composition and aspect ratio. */

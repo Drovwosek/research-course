@@ -1,5 +1,3 @@
-import { renderDiagram } from './diagrams.js';
-
 const cuePrefixes = [
   "Визуальный материал:",
   "Не обещать",
@@ -74,8 +72,6 @@ export function renderMarkdown(markdown = "") {
       output.push(`<figure class="source-slide-image"><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(sourceImage[1])}" decoding="async" loading="eager" fetchpriority="high"></figure>`);
       index += 1; continue;
     }
-    const diagram = line.trim().match(/^:::diagram ([a-z0-9-]+)$/);
-    if (diagram) { output.push(renderDiagram(diagram[1])); index += 1; continue; }
     if (line.trim() === ":::job-card") {
       const card = []; index += 1;
       while (index < lines.length && lines[index].trim() !== ":::") card.push(lines[index++]);
@@ -108,7 +104,7 @@ export function renderMarkdown(markdown = "") {
       output.push(`<ol>${items.map((item) => `<li>${renderInline(item)}</li>`).join("")}</ol>`); continue;
     }
     const paragraph = [line]; index += 1;
-    while (index < lines.length && lines[index].trim() && !/^(#{1,6})\s+|^```|^:::job-card$|^:::diagram |^[-*]\s+|^\d+\.\s+|^>\s?|^\|.+\|$/.test(lines[index])) paragraph.push(lines[index++]);
+    while (index < lines.length && lines[index].trim() && !/^(#{1,6})\s+|^```|^:::job-card$|^[-*]\s+|^\d+\.\s+|^>\s?|^\|.+\|$/.test(lines[index])) paragraph.push(lines[index++]);
     output.push(`<p>${renderInline(paragraph.join(" "))}</p>`);
   }
   return output.join("\n");
