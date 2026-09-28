@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f1e8" />
+    <title>AJTBD · Лекции</title>
+    <link rel="stylesheet" href="/app/styles.css" />
+    <link rel="stylesheet" href="/app/diagrams.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <button class="brand" id="homeButton" type="button" aria-label="К списку лекций">
+          <span class="brand-mark">A/J</span>
+          <span><strong>AJTBD</strong><small>Курс исследований</small></span>
+        </button>
+        <div class="header-actions" id="headerActions" hidden>
+          <button class="icon-button" id="overviewButton" type="button" title="Все слайды (O)"><span aria-hidden="true">▦</span><span class="button-label">Все слайды</span></button>
+          <button class="icon-button" id="notesButton" type="button" title="Показать заметки (N)" aria-pressed="false"><span aria-hidden="true">☷</span><span class="button-label">Заметки</span></button>
+          <button class="icon-button" id="fullscreenButton" type="button" title="Полный экран (F)"><span aria-hidden="true">⛶</span><span class="button-label">Полный экран</span></button>
+        </div>
+      </header>
+
+      <main>
+        <section class="library" id="libraryView" aria-labelledby="libraryTitle">
+          <h1 class="sr-only" id="libraryTitle">Лекции курса исследований AJTBD</h1>
+          <div class="lecture-grid" id="lectureGrid" aria-live="polite"></div>
+        </section>
+
+        <section class="player" id="playerView" hidden>
+          <div class="player-topline">
+            <button class="lecture-switcher" id="lectureSwitcher" type="button">
+              <span id="lessonNumber">Занятие 1</span><strong id="lessonTitle"></strong><span aria-hidden="true">⌄</span>
+            </button>
+            <div class="slide-counter" aria-live="polite"><span id="currentSlideNumber">01</span><span>/</span><span id="totalSlides">16</span></div>
+          </div>
+          <div class="progress-track" aria-hidden="true"><span id="progressBar"></span></div>
+          <div class="player-stage">
+            <article class="slide" id="slide" tabindex="-1">
+              <div class="slide-inner">
+                <p class="slide-kicker" id="slideKicker"></p><h2 id="slideTitle"></h2><div class="slide-content" id="slideContent"></div>
+              </div>
+              <aside class="slide-cue" id="slideCue" hidden></aside>
+            </article>
+            <aside class="presenter-panel" id="presenterPanel" aria-label="Заметки преподавателя" hidden>
+              <div class="presenter-panel-header">
+                <div><p id="presenterNoteMeta"></p><h3 id="presenterNoteTitle"></h3></div>
+                <button class="close-button" id="notesCloseButton" type="button" aria-label="Скрыть заметки">×</button>
+              </div>
+              <div class="presenter-note-content markdown" id="presenterNoteContent" aria-live="polite"></div>
+            </aside>
+          </div>
+          <nav class="player-controls" aria-label="Навигация по презентации">
+            <button class="nav-button" id="previousButton" type="button"><span aria-hidden="true">←</span> Назад</button>
+            <p id="slideLabel">Слайд 1</p>
+            <button class="nav-button nav-button-primary" id="nextButton" type="button">Дальше <span aria-hidden="true">→</span></button>
+          </nav>
+        </section>
+      </main>
+    </div>
+
+    <dialog class="drawer-dialog" id="overviewDialog">
+      <div class="dialog-header"><div><p class="eyebrow">Навигация</p><h2>Все слайды</h2></div><button class="close-button" data-close="overviewDialog" type="button" aria-label="Закрыть">×</button></div>
+      <div class="slide-map" id="slideMap"></div>
+    </dialog>
+    <dialog class="lesson-dialog" id="lessonDialog">
+      <div class="dialog-header"><div><p class="eyebrow">Курс</p><h2>Перейти к занятию</h2></div><button class="close-button" data-close="lessonDialog" type="button" aria-label="Закрыть">×</button></div>
+      <div class="lesson-list" id="lessonList"></div>
+    </dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="/app/app.js"></script>
+  </body>
+</html>
